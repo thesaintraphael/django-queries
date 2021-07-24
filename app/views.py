@@ -1,9 +1,14 @@
-from django.db.models import Q
+from django.db.models import Q, F, DateTimeField, ExpressionWrapper, Count
+from django.http.response import JsonResponse
 from django.shortcuts import render
+from django.utils import timezone
 
-from app.models import Person
+from app.models import BloodBank, Person
 
-from datetime import date
+from datetime import date, timedelta
+
+
+# How does Count works
 
 
 def exact_or_not():
@@ -35,7 +40,7 @@ def q_and_or(request):
 
 
 
-def q2(request):
+def nested_q(request):
 
     # all_people = Person.objects.filter(postal_code='BB')
     all_people = Person.objects.all()
@@ -94,4 +99,49 @@ def search(request):
 
     return render(request, 'search.html', {"people":people})
 
+
+def f_object(request):
+
+    # no need to have a can_donate_field on DB
+    # F makes us able to compute something
+
+    people = Person.objects.annotate(
+        can_donate_on=ExpressionWrapper(
+            F("last_donated") + timedelta(days=56),
+            output_field = DateTimeField()
+            ) 
+    ).filter(can_donate_on__lt=timezone.now())
+
+    # Expression Wrapper is used to set common output_field fo 2 different
+
+
+    return render(request, 'can_donate.html', {'people': people})
+
+
+def f_different_fields(request):
+
+    bank = BloodBank.objects.annotate(
+        existent_amount=Count('bloodbag_set'),
+        remaining=F('goal') - F('existent_amount')
+    ).values_list("goal", "existent_amount", "remaining")
+
+    print(bank)
+    return JsonResponse("OK", safe=False)
+
+
+def q_f_together(request):
+
+    people = Person.objects.filter(
+        Q(first_name=F('last_name'))
+        & ~Q(job__icontains='DEV')
+    )
+    # First name equals to last name and job not include DEV
+
+    people2 = Person.objects.filter(
+        first_name=F('last_name')
+    )  # this works too :D
+
+    print(people2)
+
+    return render(request, "job.html", {"people":people})
 

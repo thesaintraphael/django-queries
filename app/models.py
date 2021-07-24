@@ -1,14 +1,20 @@
+from datetime import datetime
+from django.utils import timezone
 from django.db import models
+
+from datetime import timedelta
 
 
 class Person(models.Model):
 
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
+    job = models.CharField(default='DEV', max_length=50)
     birth_date = models.DateField()
     birth_date_year = models.PositiveIntegerField(default=2000)
     tean = models.BooleanField(default=False)
     postal_code = models.CharField(max_length=10, default='AB')
+    last_donated = models.DateTimeField(default=timezone.now)
 
     def save(self, *args, **kwargs):
         self.birth_date_year = int(str(self.birth_date)[:4])
@@ -24,3 +30,10 @@ class Person(models.Model):
 
     def __str__(self) -> str:
         return self.full_name
+
+
+
+class BloodBank(models.Model):
+    
+    bloodbag_set = models.IntegerField()
+    goal = models.IntegerField()

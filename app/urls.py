@@ -10,5 +10,10 @@ urlpatterns = [
     path('can_donate', views.f_object, name='can_donate'),
     path('f_dif', views.f_different_fields, name='f_dif'),
     path('q-f', views.q_f_together, name='q-f'),
+    path('count-types', views.count_types, name='count-types'),
+    path('concat', views.concat, name='concat'),
+    path('coalesce', views.coalesce, name='coalesce'),
+    path('condition', views.conditional_expressions, name='condition'),
+    path('mixed', views.mixed, name='mixed'),
 
 ]

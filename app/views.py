@@ -1,14 +1,17 @@
-from django.db.models import Q, F, DateTimeField, ExpressionWrapper, Count
+from collections import defaultdict
+from django.db.models import (Q, F, DateTimeField, 
+    Value, ExpressionWrapper, Count, FloatField)
+from django.db.models.expressions import Case, When
+from django.db.models.fields import BooleanField, IntegerField
+from django.db.models.functions import Concat, ExtractYear
+from django.db.models.functions.comparison import Cast, Coalesce, NullIf
 from django.http.response import JsonResponse
 from django.shortcuts import render
 from django.utils import timezone
 
-from app.models import BloodBank, Person
+from app.models import BloodBank, Order, Person, Pet
 
 from datetime import date, timedelta
-
-
-# How does Count works
 
 
 def exact_or_not():
@@ -24,6 +27,7 @@ def exact_or_not():
     #    same happens with contains and icontains
 
 
+# ----------------------------- Q objects -------------------------------------
 
 
 def q_and_or(request):
@@ -37,7 +41,6 @@ def q_and_or(request):
     people = Person.objects.filter(Q(birth_date__lt=date_) & Q(tean=True))
   
     return render(request, 'main.html', {'people': people})
-
 
 
 def nested_q(request):
@@ -69,7 +72,6 @@ def nested_q(request):
     return render(request, "nested.html", {"all_people": all_people, "people": people})
 
 
-
 def search(request):
 
     params = ['name']
@@ -98,6 +100,9 @@ def search(request):
     people = Person.objects.filter(user_filter)
 
     return render(request, 'search.html', {"people":people})
+
+
+# ------------------------------------ F objects ---------------------------
 
 
 def f_object(request):
@@ -145,3 +150,113 @@ def q_f_together(request):
 
     return render(request, "job.html", {"people":people})
 
+
+# ---------------------------------- DB functions -----------------------------------------------------
+
+def count_types(request):
+    
+    pet_types = Pet.objects.values('pet_type').annotate(
+     Count('pet_type')
+ )
+    print("Only types:", pet_types)
+
+    pets = Pet.objects.values('pet_type', "name").annotate(
+     Count('pet_type'), Count('name')
+)      
+    # this one not returns expected answer, counts only when both fields are same in different objects
+    #  A.pet_type == B.pet_type and A.name == B.name
+
+    print("Name and types:", pets)
+
+
+    return JsonResponse("ok", safe=False)
+
+
+def concat(request):
+
+    persons = Person.objects.annotate(
+        full_name=Concat("first_name", Value(" "), "last_name")
+    ).filter(full_name__icontains="nn p").values_list('full_name')
+
+    print(persons)
+
+    # set custom manager
+    persons = Person.objects.annotate_full_name().filter(full_name__icontains='nn p').values_list('full_name')
+    print(persons) # same result
+
+    return JsonResponse('ok', safe=False)
+
+
+def coalesce(request):
+
+    persons = Person.objects.annotate(
+        goes_by=Coalesce(
+            NullIf('nickname', Value('')),
+            'first_name'
+        )
+    ).values_list('goes_by')
+
+    print(persons)
+
+    return JsonResponse("ok", safe=False)
+
+
+def conditional_expressions(request):
+
+    orders = Order.objects.annotate(
+        discounted_total=Case(
+            When(
+                customer__joined_on__year__range=(2010, 2018),
+                then=ExpressionWrapper(F('total')*0.8, output_field=FloatField()),
+            ),
+
+            When(
+                customer__joined_on__year__range=(1990, 2008),
+                then=ExpressionWrapper(F('total')*0.6, output_field=FloatField())
+            ),
+
+            default=ExpressionWrapper(F("total"), output_field=FloatField())
+        )
+    ).values_list('discounted_total', "customer__last_name")
+
+    print(orders)
+
+    return JsonResponse('ok', safe=False)
+
+
+
+def mixed(request):
+
+    persons = Person.objects.annotate(
+        birth_year_int=Cast(
+            ExtractYear("birth_date"),
+            output_field=IntegerField(),
+        ),
+        birth_year_modulus_4=F("birth_year_int") % 4,
+        birth_year_modulus_100=F("birth_year_int") % 100,
+        birth_year_modulus_400=F("birth_year_int") % 400,
+    
+    ).annotate(
+
+        born_in_leap_year=Case(
+            When(
+                Q(
+                    Q(birth_year_modulus_4=0)
+                    & Q(
+                        ~Q(birth_year_modulus_100=0)
+                        | Q(birth_year_modulus_400=0)
+                    )
+                ),
+                then=True,
+            ),
+        default=False,
+        ouput_field=BooleanField()
+        ),
+        
+    ).filter(born_in_leap_year=True). values_list("birth_date__year", flat=True).order_by('-id')
+
+    # flat used with only one field. Returns one list, not tuples.
+
+    print(persons)
+
+    return JsonResponse("ok", safe=False)

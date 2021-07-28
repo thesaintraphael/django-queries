@@ -177,12 +177,19 @@ def concat(request):
     persons = Person.objects.annotate(
         full_name=Concat("first_name", Value(" "), "last_name")
     ).filter(full_name__icontains="nn p").values_list('full_name')
+    # without Value result contains no space between first and last names ---> LukaModric instead of Luka Modric
 
     print(persons)
 
     # set custom manager
     persons = Person.objects.annotate_full_name().filter(full_name__icontains='nn p').values_list('full_name')
     print(persons) # same result
+
+
+    persons = Person.objects.annotate(
+        full_name=F('first_name') + " " + F('last_name')
+    ).values_list('full_name') # returns only zeros (probably cannot add strings)
+    print(persons)
 
     return JsonResponse('ok', safe=False)
 
@@ -195,6 +202,8 @@ def coalesce(request):
             'first_name'
         )
     ).values_list('goes_by')
+
+    # goeby equals to first_name if nickname is empty string
 
     print(persons)
 

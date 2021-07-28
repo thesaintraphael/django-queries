@@ -56,3 +56,10 @@ class Order(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     customer = models.ForeignKey(Person, related_name='orders', on_delete=models.CASCADE)
     total = models.PositiveIntegerField()
+
+
+class Author(models.Model):
+    name = models.CharField(max_length=50)
+    age = models.PositiveIntegerField(null=True, blank=True)
+    alias = models.CharField(max_length=50, null=True, blank=True)
+    goes_by = models.CharField(max_length=50, null=True, blank=True)

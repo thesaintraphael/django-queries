@@ -13,7 +13,11 @@ urlpatterns = [
     path('count-types', views.count_types, name='count-types'),
     path('concat', views.concat, name='concat'),
     path('coalesce', views.coalesce, name='coalesce'),
+    path('coalesce_prevent', views.coalesce_prevent, name='coalesce'),
+    path('coalesce2', views.coalesce2, name='coalesce2'),
     path('condition', views.conditional_expressions, name='condition'),
     path('mixed', views.mixed, name='mixed'),
+    path('cast', views.cast, name='cast'),
+    # path('collate', views.collate, name='collate'),
 
 ]

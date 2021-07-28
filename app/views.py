@@ -1,6 +1,5 @@
-from collections import defaultdict
 from django.db.models import (Q, F, DateTimeField, 
-    Value, ExpressionWrapper, Count, FloatField)
+    Value, ExpressionWrapper, Count, FloatField, Sum)
 from django.db.models.expressions import Case, When
 from django.db.models.fields import BooleanField, IntegerField
 from django.db.models.functions import Concat, ExtractYear
@@ -9,7 +8,7 @@ from django.http.response import JsonResponse
 from django.shortcuts import render
 from django.utils import timezone
 
-from app.models import BloodBank, Order, Person, Pet
+from app.models import Author, BloodBank, Order, Person, Pet
 
 from datetime import date, timedelta
 
@@ -236,6 +235,8 @@ def conditional_expressions(request):
 
 def mixed(request):
 
+    # TODO try F("birth_date__year") instead of Extract year
+
     persons = Person.objects.annotate(
         birth_year_int=Cast(
             ExtractYear("birth_date"),
@@ -269,3 +270,56 @@ def mixed(request):
     print(persons)
 
     return JsonResponse("ok", safe=False)
+
+
+def cast(request):
+
+    author = Author.objects.annotate(
+        age_as_float=Cast('age', output_field=FloatField())
+    ).first()
+
+    print(author.age_as_float)
+
+    return JsonResponse("ok", safe=False)
+
+
+def coalesce2(request):
+
+    Author.objects.create(
+        name='Margaret Smith', goes_by='Maggie'
+    )
+
+    author = Author.objects.annotate(
+        screen_name=Coalesce('alias', 'goes_by', 'name')
+    ).last()    
+
+    # returns first none null value from given values
+
+    print(author.screen_name)
+
+
+def coalesce_prevent(request):
+
+    aggregated = Author.objects.aggregate(
+        combined_age=Coalesce(Sum('age'), Value(0)),
+        combined_age_default=Sum('age')
+    )
+
+    print(aggregated['combined_age'])
+    print(aggregated['combined_age_default'])
+
+    return JsonResponse("ok", safe=False)
+
+
+# def collate(request):
+
+#     # Takes an expresssion and a collation name to query against
+#     # works on django 3.2
+
+#     authors = Author.objects.filter(name=Collate(
+#         Value('john'), 'nocase'
+#     ))
+    
+#     print(authors)
+
+

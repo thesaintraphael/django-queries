@@ -3,12 +3,14 @@ from django.db.models import (Q, F, DateTimeField,
 from django.db.models.expressions import Case, When
 from django.db.models.fields import BooleanField, IntegerField
 from django.db.models.functions import Concat, ExtractYear
-from django.db.models.functions.comparison import Cast, Coalesce, NullIf
+from django.db.models.functions.comparison import Cast, Coalesce, Greatest, NullIf
+from django.db.models.functions.text import Lower
+from django.http import request
 from django.http.response import JsonResponse
 from django.shortcuts import render
 from django.utils import timezone
 
-from app.models import Author, BloodBank, Order, Person, Pet
+from app.models import Author, Blog, BloodBank, Comment, Order, Person, Pet
 
 from datetime import date, timedelta
 
@@ -323,3 +325,67 @@ def coalesce_prevent(request):
 #     print(authors)
 
 
+
+def greatest(request):
+
+    """Accepts a list of at least two field names or expressions and returns the greatest value.
+     Each argument must be of a similar type, so mixing text 
+        and numbers will result in a database error."""
+    
+    blog = Blog.objects.create(body='Greatest is the best')
+    comment = Comment.objects.create(body='No Least is better.', blog=blog)
+
+    comments = Comment.objects.annotate(last_updated=Greatest(
+        'modified', 'blog__modified'
+    ))
+
+    annotated_comment = comments.first()
+    print(annotated_comment.id)
+
+    return JsonResponse('ok', safe=False)
+
+
+
+# def json_object(request):
+
+    """Takes a list of key-value pairs and 
+    returns a JSON object containing those pairs."""
+
+    # Works on django 3.2
+
+    # Author.objects.create(
+    #     name='Mac Miller', alias='mc_miller', age=28
+    # )
+
+    # author = Author.objects.annotate(json_object=JSONObject(
+    #     name=Lower('name'),
+    #     alias='alias',
+    #     age=F('age') * 2.
+    # )).first()
+
+    # print(author.json_object)
+    # {'name': 'margaret smith', 'alias': 'msmith', 'age': 50}
+
+    # return JsonResponse('ok', safe=False)
+
+
+
+def least(request):
+
+    # from django.db.models.functions import Least
+
+    """Accepts a list of at least two field names or expressions and returns the least value.
+     Each argument must be of a similar type, so mixing text and
+      numbers will result in a database error."""
+    
+    pass
+
+
+def null_if(request):
+
+    # from django.db.models.functions import NullIf
+
+    """Accepts two expressions and returns None 
+    if they are equal, otherwise returns expression1."""
+
+    # examle on line 202 with Coalesce

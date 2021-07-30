@@ -18,6 +18,7 @@ urlpatterns = [
     path('condition', views.conditional_expressions, name='condition'),
     path('mixed', views.mixed, name='mixed'),
     path('cast', views.cast, name='cast'),
+    path('greatest', views.greatest, name='greatest'),
     # path('collate', views.collate, name='collate'),
 
 ]

@@ -1,0 +1,1 @@
+Simple django app to practice DB functions and queries

@@ -19,6 +19,7 @@ urlpatterns = [
     path('mixed', views.mixed, name='mixed'),
     path('cast', views.cast, name='cast'),
     path('greatest', views.greatest, name='greatest'),
+    path('extract', views.extract, name='extract'),
     # path('collate', views.collate, name='collate'),
 
 ]

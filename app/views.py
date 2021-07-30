@@ -4,13 +4,14 @@ from django.db.models.expressions import Case, When
 from django.db.models.fields import BooleanField, IntegerField
 from django.db.models.functions import Concat, ExtractYear
 from django.db.models.functions.comparison import Cast, Coalesce, Greatest, NullIf
+from django.db.models.functions.datetime import Extract
 from django.db.models.functions.text import Lower
 from django.http import request
 from django.http.response import JsonResponse
 from django.shortcuts import render
 from django.utils import timezone
 
-from app.models import Author, Blog, BloodBank, Comment, Order, Person, Pet
+from app.models import Author, Blog, BloodBank, Comment, Experiment, Order, Person, Pet
 
 from datetime import date, timedelta
 
@@ -389,3 +390,39 @@ def null_if(request):
     if they are equal, otherwise returns expression1."""
 
     # examle on line 202 with Coalesce
+
+
+
+# --------------------------- Date Functions --------------------------
+
+def extract(request):
+
+    experiment = Experiment.objects.annotate(
+        start_year=Extract('start_datetime', 'year')                  
+
+    ).first()
+
+    print(experiment.start_year)
+
+    experiment = Experiment.objects.annotate(
+        start_year=F('start_datetime__year')
+    ).first()
+
+    print(experiment.start_year)
+    # prints whole date
+
+
+    experiments_count = Experiment.objects.filter(
+    start_datetime__year=Extract('end_datetime', 'year')).count()
+    print(experiments_count)
+
+
+
+    """
+        lookup_name = year, month, day, week_day, iso_weekd_day and so on
+
+    
+    """
+    
+
+    return JsonResponse('ok', safe=False)

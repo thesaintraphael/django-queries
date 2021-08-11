@@ -38,17 +38,20 @@ def q_and_or(request):
 
     # or
     people = Person.objects.filter(Q(birth_date__gt=date_) | Q(tean=True))
+    print(people)
 
     # and
     people = Person.objects.filter(Q(birth_date__lt=date_) & Q(tean=True))
+    print(people)
   
-    return render(request, 'main.html', {'people': people})
+    return JsonResponse('ok', safe=False)
 
 
 def nested_q(request):
 
     # all_people = Person.objects.filter(postal_code='BB')
     all_people = Person.objects.all()
+    print(all_people)
 
     # nested Q query
     people = Person.objects.filter(
@@ -71,7 +74,10 @@ def nested_q(request):
             # TODO check it out
     )
 
-    return render(request, "nested.html", {"all_people": all_people, "people": people})
+    print(people)
+
+    return JsonResponse('ok', safe=False)
+
 
 
 def search(request):
@@ -100,8 +106,10 @@ def search(request):
         )
     
     people = Person.objects.filter(user_filter)
+    print(people)
 
-    return render(request, 'search.html', {"people":people})
+    return JsonResponse('ok', safe=False)
+
 
 
 # ------------------------------------ F objects ---------------------------
@@ -121,8 +129,9 @@ def f_object(request):
 
     # Expression Wrapper is used to set common output_field fo 2 different
 
+    print(people)
 
-    return render(request, 'can_donate.html', {'people': people})
+    return JsonResponse('ok', safe=False)
 
 
 def f_different_fields(request):
@@ -143,6 +152,7 @@ def q_f_together(request):
         & ~Q(job__icontains='DEV')
     )
     # First name equals to last name and job not include DEV
+    print(people)
 
     people2 = Person.objects.filter(
         first_name=F('last_name')
@@ -150,7 +160,7 @@ def q_f_together(request):
 
     print(people2)
 
-    return render(request, "job.html", {"people":people})
+    return JsonResponse('ok', safe=False)
 
 
 # ---------------------------------- DB functions -----------------------------------------------------

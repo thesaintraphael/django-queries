@@ -4,7 +4,10 @@ from . import views
 
 urlpatterns = [
 
-    path('home', views.home, name='home')
+    path('select', views.select_related, name='select'),
+    path('pre', views.prefetch_filter, name='pre'),
+    path('pre-filter', views.prefetch_filter, name='pre-filter'),
+    path('filter-pre', views.filter_prefect, name='filter'),
 
 ]
  

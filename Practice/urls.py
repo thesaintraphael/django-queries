@@ -10,4 +10,5 @@ urlpatterns = [
     path('__debug__/', include(debug_toolbar.urls)),
     path('', include('app.urls')),
     path('', include('agg.urls')),
+    path('', include('app_related.urls')),
 ]

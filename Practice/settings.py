@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'app.apps.AppConfig',
     'agg.apps.AggConfig',
+    'app_related.apps.AppRelatedConfig',
     'debug_toolbar'
 ]
 

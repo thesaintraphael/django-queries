@@ -21,7 +21,7 @@ def average_price(request):
     print(max_price)
     # format same as previous
 
-    return JsonResponse('ok', safe=False)
+    return render(request, "home.html")
 
 
 def max_and_avg(request):
@@ -41,7 +41,7 @@ def max_and_avg(request):
     # 'rating__avg': 9.25, 'price__max': Decimal('35.9900000000000'), 
     # 'rating__max': 9.5, 'price__min': Decimal('15'), 'rating__min': 9.0}
 
-    return JsonResponse('ok', safe=False)
+    return render(request, "home.html")
 
 
 def count_things(request):
@@ -66,7 +66,7 @@ def count_things(request):
     print(pubs)
     
 
-    return JsonResponse('ok', safe=False)
+    return render(request, "home.html")
     
 
 def ann_and_agg(request):
@@ -78,7 +78,7 @@ def ann_and_agg(request):
 
     # works as same as with normal fields of a model
 
-    return JsonResponse('ok', safe=False)
+    return render(request, "home.html")
 
 
 def aggreagate_for_each(request):
@@ -90,7 +90,7 @@ def aggreagate_for_each(request):
 
         print(book_author.count_of_authors)
 
-    return JsonResponse('ok', safe=False)
+    return render(request, "home.html")
 
 
 def distinct(request):
@@ -121,7 +121,7 @@ def join_aggreagate(request):
 
     # Process of joing Store and Book models
 
-    return JsonResponse('ok', safe=False)
+    return render(request, "home.html")
 
 
 def sum_pages(request):
@@ -132,7 +132,7 @@ def sum_pages(request):
 
     print(authors)
 
-    return JsonResponse('ok', safe=False)
+    return render(request, "home.html")
 
 
 # Aggreation and other QS clauses
@@ -158,7 +158,7 @@ def filter_ag(request):
 
     print(authors)
 
-    return JsonResponse('ok', safe=False)
+    return render(request, "home.html")
 
 
 def aggregate_annotaions(request):
@@ -172,4 +172,4 @@ def aggregate_annotaions(request):
 
     print(num_authors_avg)
 
-    return JsonResponse('ok', safe=False)
+    return render(request, "home.html")

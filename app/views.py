@@ -50,7 +50,7 @@ def q_and_or(request):
     people = Person.objects.filter(Q(birth_date__lt=date_) & Q(tean=True))
     print(people)
 
-    return JsonResponse("ok", safe=False)
+    return render(request, "home.html")
 
 
 def nested_q(request):
@@ -76,7 +76,7 @@ def nested_q(request):
 
     print(people)
 
-    return JsonResponse("ok", safe=False)
+    return render(request, "home.html")
 
 
 def search(request):
@@ -102,7 +102,7 @@ def search(request):
     people = Person.objects.filter(user_filter)
     print(people)
 
-    return JsonResponse("ok", safe=False)
+    return render(request, "home.html")
 
 
 # ------------------------------------ F objects ---------------------------
@@ -123,7 +123,7 @@ def f_object(request):
 
     print(people)
 
-    return JsonResponse("ok", safe=False)
+    return render(request, "home.html")
 
 
 def f_different_fields(request):
@@ -134,7 +134,7 @@ def f_different_fields(request):
     ).values_list("goal", "existent_amount", "remaining")
 
     print(bank)
-    return JsonResponse("OK", safe=False)
+    return render(request, "home.html")
 
 
 def q_f_together(request):
@@ -149,7 +149,7 @@ def q_f_together(request):
 
     print(people2)
 
-    return JsonResponse("ok", safe=False)
+    return render(request, "home.html")
 
 
 # ---------------------------------- DB functions -----------------------------------------------------
@@ -168,7 +168,7 @@ def count_types(request):
 
     print("Name and types:", pets)
 
-    return JsonResponse("ok", safe=False)
+    return render(request, "home.html")
 
 
 def concat(request):
@@ -197,7 +197,7 @@ def concat(request):
     )  # returns only zeros (probably cannot add strings)
     print(persons)
 
-    return JsonResponse("ok", safe=False)
+    return render(request, "home.html")
 
 
 def coalesce(request):
@@ -210,7 +210,7 @@ def coalesce(request):
 
     print(persons)
 
-    return JsonResponse("ok", safe=False)
+    return render(request, "home.html")
 
 
 def conditional_expressions(request):
@@ -231,7 +231,7 @@ def conditional_expressions(request):
 
     print(orders)
 
-    return JsonResponse("ok", safe=False)
+    return render(request, "home.html")
 
 
 def mixed(request):
@@ -270,7 +270,7 @@ def mixed(request):
 
     print(persons)
 
-    return JsonResponse("ok", safe=False)
+    return render(request, "home.html")
 
 
 def cast(request):
@@ -281,7 +281,7 @@ def cast(request):
 
     print(author.age_as_float)
 
-    return JsonResponse("ok", safe=False)
+    return render(request, "home.html")
 
 
 def coalesce2(request):
@@ -306,7 +306,7 @@ def coalesce_prevent(request):
     print(aggregated["combined_age"])
     print(aggregated["combined_age_default"])
 
-    return JsonResponse("ok", safe=False)
+    return render(request, "home.html")
 
 
 # def collate(request):
@@ -337,7 +337,7 @@ def greatest(request):
     annotated_comment = comments.first()
     print(annotated_comment.id)
 
-    return JsonResponse("ok", safe=False)
+    return render(request, "home.html")
 
     # def json_object(request):
 
@@ -359,7 +359,7 @@ def greatest(request):
     # print(author.json_object)
     # {'name': 'margaret smith', 'alias': 'msmith', 'age': 50}
 
-    # return JsonResponse('ok', safe=False)
+    # return render(request, "home.html")
 
 
 def least(request):
@@ -412,7 +412,7 @@ def extract(request):
     
     """
 
-    return JsonResponse("ok", safe=False)
+    return render(request, "home.html")
 
 
 # --------------------------- Common --------------------------

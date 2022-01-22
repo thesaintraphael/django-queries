@@ -4,7 +4,7 @@ Simple app to practice django's advanced queries
 
 ## Apps
 
-    app - focused on annotations
+    app - focused on annotations and common orm methods, functions
     agg - focused on aggregations (contain annotations too)
     app_related - focused on select/fetch_related
 

@@ -436,3 +436,42 @@ def extract(request):
     
 
     return JsonResponse('ok', safe=False)
+
+
+# --------------------------- Common --------------------------
+
+
+def values_with_get(request):
+    
+    author = Author.objects.create(name="Tom", age=19)
+    author_id = author.id
+    
+    # The values and values_list method should be callled by an queryset
+    # so that is why we cannot call something like that Author.objects.get(id=2).values("name")
+    # objects.get returns object not a queryset
+    
+    # To call values with get:
+    print(Author.objects.values("name").get(id=author_id))
+    
+    return render(request, "home.html")
+
+
+def mapping_querry(request):
+    
+    # Author.objects.create(name="Ben", age=32)
+    
+    # mapping with loop
+    authors = Author.objects.all()
+    authors_map = {author.pk: author for author in authors}
+    print(authors_map)  # {1: 'Tom', 2: 'Ben'}
+    
+    
+    # without loop
+    authors_map = Author.objects.in_bulk()
+    print(authors_map) # same result
+    
+    
+    # possible to send id_list of objects inside in_bulk
+    print(Author.objects.in_bulk(id_list=[1, 2]))
+    
+    return render(request, "home.html")

@@ -20,6 +20,8 @@ urlpatterns = [
     path('cast', views.cast, name='cast'),
     path('greatest', views.greatest, name='greatest'),
     path('extract', views.extract, name='extract'),
+    path('values-get', views.values_with_get, name='values-get'),
+    path('bulk', views.mapping_querry, name='bulks'),
     # path('collate', views.collate, name='collate'),
 
 ]

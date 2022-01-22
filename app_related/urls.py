@@ -8,6 +8,7 @@ urlpatterns = [
     path('pre', views.prefetch_filter, name='pre'),
     path('pre-filter', views.prefetch_filter, name='pre-filter'),
     path('filter-pre', views.filter_prefect, name='filter'),
+    path('only', views.using_only, name='filter'),
 
 ]
  

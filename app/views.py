@@ -450,3 +450,19 @@ def mapping_querry(request):
     print(Author.objects.in_bulk(id_list=[1, 2]))
 
     return render(request, "home.html")
+
+
+def testing_refresh_from_db(request):
+    
+    """
+    Refrshes the object from db. Great method to use while writin unittest and some other sitauations.
+    Possible to refresh only some fields by sending fields arg
+    """
+    
+    a = Author.objects.get(pk=1)
+    Author.objects.filter(pk=1).update(name="New Name")
+    print(a.name) # prints out Old Name
+    a.refresh_from_db()  
+    prit(a.name) # prints out New Name
+    
+    
